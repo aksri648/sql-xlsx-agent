@@ -1,0 +1,38 @@
+# Environment
+.env
+.env.local
+venv/
+.venv/
+*.pyc
+__pycache__/
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+
+# Docker
+.docker/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Uploads
+uploads/
+
+# Build
+build/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
