@@ -86,12 +86,26 @@ export default function ChatPage() {
 
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className="flex flex-col items-center justify-center h-full text-center max-w-lg mx-auto">
             <h2 className="text-2xl font-semibold mb-2">Welcome to AI Data Analyst</h2>
-            <p className="text-muted-foreground max-w-md">
+            <p className="text-muted-foreground mb-6">
               Upload a dataset or connect a database, then ask questions about your data
               using natural language.
             </p>
+            <div className="flex gap-3">
+              <a
+                href="/datasets"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 text-sm"
+              >
+                Upload Files
+              </a>
+              <a
+                href="/database"
+                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:opacity-90 text-sm"
+              >
+                Connect Database
+              </a>
+            </div>
           </div>
         )}
 
