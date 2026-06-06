@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, FileSpreadsheet, X, CheckCircle } from "lucide-react";
+import { Upload, FileSpreadsheet, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function DatasetsPage() {
   const [uploading, setUploading] = useState(false);
@@ -45,37 +48,43 @@ export default function DatasetsPage() {
   };
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="container py-8">
       <h1 className="text-3xl font-bold mb-8">Datasets</h1>
 
-      <div
-        className={`border-2 border-dashed rounded-lg p-12 text-center mb-8 transition-colors ${
-          dragActive ? "border-primary bg-primary/5" : "border-border"
+      <Card
+        className={`mb-8 border-dashed border-2 transition-colors ${
+          dragActive ? "border-primary bg-primary/5" : ""
         }`}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragActive(true);
-        }}
-        onDragLeave={() => setDragActive(false)}
-        onDrop={handleDrop}
       >
-        <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-semibold mb-2">Upload Files</h3>
-        <p className="text-muted-foreground mb-4">
-          Drag and drop CSV or Excel files here, or click to browse
-        </p>
-        <label className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg cursor-pointer hover:opacity-90">
-          <FileSpreadsheet className="h-4 w-4" />
-          Browse Files
-          <input
-            type="file"
-            className="hidden"
-            accept=".csv,.xlsx,.xls"
-            multiple
-            onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
-          />
-        </label>
-      </div>
+        <CardContent
+          className="flex flex-col items-center justify-center py-12"
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragActive(true);
+          }}
+          onDragLeave={() => setDragActive(false)}
+          onDrop={handleDrop}
+        >
+          <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Upload Files</h3>
+          <p className="text-muted-foreground mb-4 text-center">
+            Drag and drop CSV or Excel files here, or click to browse
+          </p>
+          <Button asChild>
+            <label className="cursor-pointer">
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Browse Files
+              <input
+                type="file"
+                className="hidden"
+                accept=".csv,.xlsx,.xls"
+                multiple
+                onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+              />
+            </label>
+          </Button>
+        </CardContent>
+      </Card>
 
       {uploading && (
         <div className="flex items-center gap-2 mb-4">
@@ -86,35 +95,33 @@ export default function DatasetsPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {datasets.map((dataset) => (
-          <div
-            key={dataset.id}
-            className="border rounded-lg p-4 bg-card"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <h4 className="font-semibold">{dataset.name}</h4>
-                <p className="text-sm text-muted-foreground">
-                  {dataset.source_type} • {dataset.row_count} rows
-                </p>
+          <Card key={dataset.id}>
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div>
+                  <CardTitle className="text-base">{dataset.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {dataset.source_type} • {dataset.row_count} rows
+                  </p>
+                </div>
+                <CheckCircle className="h-5 w-5 text-green-500" />
               </div>
-              <CheckCircle className="h-5 w-5 text-green-500" />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {dataset.columns?.slice(0, 3).map((col: any, i: number) => (
-                <span
-                  key={i}
-                  className="px-2 py-1 bg-secondary text-secondary-foreground text-xs rounded"
-                >
-                  {col.name}
-                </span>
-              ))}
-              {(dataset.columns?.length || 0) > 3 && (
-                <span className="px-2 py-1 bg-secondary text-secondary-foreground text-xs rounded">
-                  +{(dataset.columns?.length || 0) - 3} more
-                </span>
-              )}
-            </div>
-          </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {dataset.columns?.slice(0, 3).map((col: any, i: number) => (
+                  <Badge key={i} variant="secondary">
+                    {col.name}
+                  </Badge>
+                ))}
+                {(dataset.columns?.length || 0) > 3 && (
+                  <Badge variant="outline">
+                    +{(dataset.columns?.length || 0) - 3} more
+                  </Badge>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>

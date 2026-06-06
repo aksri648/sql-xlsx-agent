@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Database, Plus, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { Database, Plus, Trash2, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 type DatabaseConnection = {
   id: string;
@@ -52,103 +57,105 @@ export default function DatabasePage() {
   };
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="container py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Database Connections</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
-        >
-          <Plus className="h-4 w-4" />
+        <Button onClick={() => setShowForm(true)}>
+          <Plus className="mr-2 h-4 w-4" />
           Add Connection
-        </button>
+        </Button>
       </div>
 
       {showForm && (
-        <div className="border rounded-lg p-6 mb-8 bg-card">
-          <h3 className="text-lg font-semibold mb-4">New Connection</h3>
-          <div className="grid gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Database Type</label>
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>New Connection</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="db-type">Database Type</Label>
               <select
+                id="db-type"
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg bg-background"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <option value="postgresql">PostgreSQL</option>
                 <option value="mysql">MySQL</option>
                 <option value="sqlite">SQLite</option>
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Connection String</label>
-              <input
-                type="text"
+            <div className="space-y-2">
+              <Label htmlFor="conn-string">Connection String</Label>
+              <Input
+                id="conn-string"
                 value={formData.connectionString}
                 onChange={(e) => setFormData({ ...formData, connectionString: e.target.value })}
                 placeholder="localhost:5432/mydb"
-                className="w-full px-3 py-2 border rounded-lg bg-background"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Alias (Optional)</label>
-              <input
-                type="text"
+            <div className="space-y-2">
+              <Label htmlFor="alias">Alias (Optional)</Label>
+              <Input
+                id="alias"
                 value={formData.alias}
                 onChange={(e) => setFormData({ ...formData, alias: e.target.value })}
                 placeholder="My Database"
-                className="w-full px-3 py-2 border rounded-lg bg-background"
               />
             </div>
             <div className="flex gap-2">
-              <button
+              <Button
                 onClick={handleConnect}
                 disabled={testing || !formData.connectionString}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 disabled:opacity-50"
               >
                 {testing ? "Testing..." : "Connect"}
-              </button>
-              <button
-                onClick={() => setShowForm(false)}
-                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:opacity-90"
-              >
+              </Button>
+              <Button variant="outline" onClick={() => setShowForm(false)}>
                 Cancel
-              </button>
+              </Button>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {connections.map((conn) => (
-          <div key={conn.id} className="border rounded-lg p-4 bg-card">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <Database className="h-8 w-8 text-primary" />
-                <div>
-                  <h4 className="font-semibold">{conn.alias}</h4>
-                  <p className="text-sm text-muted-foreground">{conn.type}</p>
+          <Card key={conn.id}>
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <Database className="h-8 w-8 text-primary" />
+                  <div>
+                    <CardTitle className="text-base">{conn.alias}</CardTitle>
+                    <Badge variant="secondary" className="mt-1">
+                      {conn.type}
+                    </Badge>
+                  </div>
                 </div>
+                {conn.status === "connected" && (
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                )}
               </div>
-              {conn.status === "connected" ? (
-                <CheckCircle className="h-5 w-5 text-green-500" />
-              ) : (
-                <XCircle className="h-5 w-5 text-red-500" />
-              )}
-            </div>
-            <button className="mt-4 text-sm text-destructive hover:underline flex items-center gap-1">
-              <Trash2 className="h-4 w-4" />
-              Remove
-            </button>
-          </div>
+            </CardHeader>
+            <CardContent>
+              <Button variant="ghost" size="sm" className="text-destructive">
+                <Trash2 className="mr-2 h-4 w-4" />
+                Remove
+              </Button>
+            </CardContent>
+          </Card>
         ))}
 
         {connections.length === 0 && !showForm && (
-          <div className="col-span-full text-center py-12 text-muted-foreground">
-            <Database className="mx-auto h-12 w-12 mb-4 opacity-50" />
-            <p>No database connections yet</p>
-            <p className="text-sm">Add a connection to start querying your databases</p>
-          </div>
+          <Card className="col-span-full border-dashed">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Database className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="font-medium">No database connections yet</p>
+              <p className="text-sm text-muted-foreground">
+                Add a connection to start querying your databases
+              </p>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

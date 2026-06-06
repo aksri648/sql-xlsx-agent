@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { Providers } from "./providers";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,25 +28,28 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <nav className="border-b bg-card">
-          <div className="max-w-7xl mx-auto px-4 flex items-center h-14 gap-6">
-            <Link href="/" className="font-bold text-primary">
-              AI Data Analyst
-            </Link>
-            <div className="flex gap-4 ml-auto">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
+        <Providers>
+          <nav className="border-b bg-card">
+            <div className="container flex items-center h-14 gap-6">
+              <Link href="/" className="font-bold text-primary">
+                AI Data Analyst
+              </Link>
+              <div className="flex gap-4 ml-auto items-center">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <ThemeToggle />
+              </div>
             </div>
-          </div>
-        </nav>
-        <Providers>{children}</Providers>
+          </nav>
+          {children}
+        </Providers>
       </body>
     </html>
   );

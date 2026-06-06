@@ -1,6 +1,8 @@
 import { Message, ChartConfig } from "@/types";
 import { CodeBlock } from "./code-block";
 import { ChartComponent } from "./chart";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
 
 interface ChatMessageProps {
@@ -12,9 +14,11 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`max-w-[80%] rounded-lg p-4 ${
-          isUser ? "bg-primary text-primary-foreground" : "bg-card border"
+      <Card
+        className={`max-w-[80%] p-4 ${
+          isUser
+            ? "bg-primary text-primary-foreground border-primary"
+            : "bg-card"
         }`}
       >
         <div className="prose prose-sm max-w-none dark:prose-invert">
@@ -43,18 +47,24 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
         {message.sql && (
           <div className="mt-4">
-            <h4 className="text-sm font-semibold mb-2">Generated SQL</h4>
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="outline">SQL</Badge>
+              <h4 className="text-sm font-semibold">Generated Query</h4>
+            </div>
             <CodeBlock code={message.sql} language="sql" />
           </div>
         )}
 
         {message.pandas && (
           <div className="mt-4">
-            <h4 className="text-sm font-semibold mb-2">Generated Pandas</h4>
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="outline">Pandas</Badge>
+              <h4 className="text-sm font-semibold">Generated Code</h4>
+            </div>
             <CodeBlock code={message.pandas} language="python" />
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }
